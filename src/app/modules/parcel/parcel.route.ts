@@ -23,6 +23,8 @@ router.patch("/confirm/:id", authenticate, authorize("receiver"), confirmDeliver
 
 // Admin routes
 router.patch("/status/:id", authenticate, authorize("admin"), updateParcelStatus);
+
+// Public routes
 router.get("/track/:trackingId", getParcelByTrackingId); // public tracking
 
 export default router;

@@ -26,7 +26,7 @@ export const createParcel = async (req: Request, res: Response) => {
     });
 
     await parcel.save();
-    res.status(201).json({ message: "Parcel created", parcel });
+    res.status(201).json({ success: true, message: "Parcel created", parcel });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
@@ -86,7 +86,9 @@ export const confirmDelivery = async (req: Request, res: Response) => {
 
     await parcel.save();
 
-    res.status(200).json({ message: "Parcel delivered", parcel });
+    res
+      .status(200)
+      .json({ success: true, message: "Parcel delivered", parcel });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
@@ -94,10 +96,10 @@ export const confirmDelivery = async (req: Request, res: Response) => {
 
 // Admin: update parcel status
 export const updateParcelStatus = async (req: Request, res: Response) => {
+  const { status, note, location } = req.body;
   try {
-    const { status, note, location } = req.body;
     const parcel = await Parcel.findById(req.params.id);
-    if (!parcel) return res.status(404).json({ message: "Parcel not found" });
+    if (!parcel) return res.status(404).json({success: false, message: "Parcel not found" });
 
     parcel.currentStatus = status;
     parcel.statusLogs.push({
@@ -109,7 +111,7 @@ export const updateParcelStatus = async (req: Request, res: Response) => {
     });
     await parcel.save();
 
-    res.status(200).json({ message: "Parcel status updated", parcel });
+    res.status(200).json({success: true, message: "Parcel status updated", parcel });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
@@ -119,9 +121,9 @@ export const updateParcelStatus = async (req: Request, res: Response) => {
 export const getParcelByTrackingId = async (req: Request, res: Response) => {
   try {
     const parcel = await Parcel.findOne({ trackingId: req.params.trackingId });
-    if (!parcel) return res.status(404).json({ message: "Parcel not found" });
+    if (!parcel) return res.status(404).json({success: false, message: "Parcel not found" });
 
-    res.status(200).json(parcel);
+    res.status(200).json({success: true, message: "Fetched parcel by tracking id", parcel});
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
@@ -131,7 +133,9 @@ export const getParcelByTrackingId = async (req: Request, res: Response) => {
 export const getMyParcels = async (req: Request, res: Response) => {
   try {
     const parcels = await Parcel.find({ sender: req.user!._id });
-    res.status(200).json(parcels);
+    res
+      .status(200)
+      .json({ success: true, message: "Parcel fetched", data: parcels });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
@@ -141,7 +145,11 @@ export const getMyParcels = async (req: Request, res: Response) => {
 export const getIncomingParcels = async (req: Request, res: Response) => {
   try {
     const parcels = await Parcel.find({ receiver: req.user!._id });
-    res.status(200).json(parcels);
+    res.status(200).json({
+      success: true,
+      message: "All incoming parcels fetched",
+      data: parcels,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
