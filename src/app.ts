@@ -14,7 +14,7 @@ app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
-app.use(cookieParser())
+app.use(cookieParser());
 
 // Routes
 app.use("/api/v1/users", userRoutes);
