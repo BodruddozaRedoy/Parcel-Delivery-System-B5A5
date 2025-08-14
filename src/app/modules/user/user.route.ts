@@ -4,7 +4,6 @@ import {
   loginUser,
   getMe,
   updateMe,
-  getUsers,
   updateUser,
   toggleUserStatus,
   getUserStats,

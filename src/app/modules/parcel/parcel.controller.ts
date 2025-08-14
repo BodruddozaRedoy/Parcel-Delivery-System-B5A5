@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { Parcel, ParcelStatus } from "./parcel.model";
-import { Types } from "mongoose";
 import { generateTrackingId } from "../../utils/generateTrackingId";
 import { User } from "../user/user.model"; // Added import for User
 

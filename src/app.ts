@@ -17,6 +17,9 @@ app.use(morgan("dev"));
 app.use(cookieParser());
 
 // Routes
+app.get("/", (req, res) => {
+  res.send("Welcome to parcel delivery system")
+})
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/parcels", parcelRoutes);
 

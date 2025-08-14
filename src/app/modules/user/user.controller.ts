@@ -112,14 +112,16 @@ export const loginUser = async (req: Request, res: Response) => {
       });
     }
 
-    const jwtSecret = process.env.JWT_SECRET;
-    if (!jwtSecret) {
+    if (!process.env.JWT_SECRET) {
       throw new Error("JWT_SECRET is not configured");
     }
+    const payload = { id: user._id, role: user.role };
+    const secret = process.env.JWT_SECRET;
+    const options: jwt.SignOptions = {
+      expiresIn: "7d",
+    };
 
-    const token = jwt.sign({ id: user._id, role: user.role }, jwtSecret, {
-      expiresIn: process.env.JWT_EXPIRES_IN || "7d",
-    });
+    const token = jwt.sign(payload, secret, options);
 
     // Set cookie
     res.cookie("token", token, {
