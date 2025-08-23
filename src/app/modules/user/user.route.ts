@@ -8,6 +8,7 @@ import {
   toggleUserStatus,
   getUserStats,
   searchUsers,
+  logoutUser,
 } from "./user.controller";
 import { authenticate, authorize } from "../../middlewares/auth";
 
@@ -20,6 +21,7 @@ router.post("/login", loginUser);
 // Authenticated routes (any role)
 router.get("/me", authenticate, getMe);
 router.patch("/me", authenticate, updateMe);
+router.post("/logout", authenticate, logoutUser)
 
 // Admin-only routes
 router.get("/", authenticate, authorize("admin"), searchUsers);
