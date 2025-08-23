@@ -174,6 +174,29 @@ export const getMe = async (req: Request, res: Response) => {
   }
 };
 
+// Logout
+export const logoutUser = async (req: Request, res: Response) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "User logged out successfully",
+    });
+  } catch (error) {
+    console.error("Logout error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error during logout",
+    });
+  }
+};
+
+
 // Update own profile
 export const updateMe = async (req: Request, res: Response) => {
   try {
