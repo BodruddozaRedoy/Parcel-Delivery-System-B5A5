@@ -1,19 +1,18 @@
-// @ts-check
-
-import eslint from "@eslint/js";
+import js from "@eslint/js";
 import tseslint from "typescript-eslint";
+import globals from "globals";
 
-export default tseslint.config(
-  eslint.configs.recommended,
-  //   tseslint.configs.recommended
-  tseslint.configs.strict,
-  tseslint.configs.stylistic,
+export default [
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
   {
-    rules: {
-      "no-console": "warn",
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-unused-vars": "off",
-      "@typescript-eslint/no-non-null-assertion": "off",
+    languageOptions: {
+      globals: globals.node,
     },
-  }
-);
+    rules: {
+      // Disable or change rules here
+      "@typescript-eslint/no-explicit-any": "off",
+      "no-console": "off",
+    },
+  },
+];
