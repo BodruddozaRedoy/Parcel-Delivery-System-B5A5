@@ -395,7 +395,7 @@ export const toggleParcelBlock = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
-      message: `Parcel ${parcel.isBlocked ? "blocked" : "unblocked"}`,
+      message: `Parcel ${parcel.isBlocked ? "Blocked" : "Unblocked"}`,
       data: parcel,
     });
   } catch (error) {
