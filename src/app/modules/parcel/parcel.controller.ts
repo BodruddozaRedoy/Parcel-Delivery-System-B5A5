@@ -33,13 +33,13 @@ export const createParcel = async (req: Request, res: Response) => {
     }
 
     // Validate receiver exists
-    const receiverUser = await User.findById(receiver);
-    if (!receiverUser) {
-      return res.status(400).json({
-        success: false,
-        message: "Receiver not found",
-      });
-    }
+    // const receiverUser = await User.findById(receiver);
+    // if (!receiverUser) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Receiver not found",
+    //   });
+    // }
 
     const trackingId = generateTrackingId();
     const parcel = new Parcel({
