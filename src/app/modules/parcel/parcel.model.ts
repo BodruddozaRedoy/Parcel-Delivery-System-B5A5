@@ -48,7 +48,10 @@ const ParcelSchema = new Schema<IParcel>(
     weight: { type: Number, required: true },
     fee: { type: Number, default: 0 },
     sender: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    receiver: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    receiver: {
+      name:String,
+      phone:String,
+    },
     fromAddress: { type: String, required: true },
     toAddress: { type: String, required: true },
     currentStatus: { type: String, enum: Object.values(ParcelStatus), default: ParcelStatus.REQUESTED },
