@@ -12,6 +12,7 @@ import {
   deleteParcel,
   toggleParcelStatus,
   getDeliveryStats,
+  toggleParcelBlock,
 } from "./parcel.controller";
 import { authenticate, authorize } from "../../middlewares/auth";
 
@@ -55,6 +56,7 @@ router.patch(
   authorize("admin"),
   toggleParcelStatus
 );
+router.patch("/toggle/block/:parcelId", authenticate, authorize("admin"), toggleParcelBlock)
 router.delete("/:id", authenticate, authorize("admin"), deleteParcel);
 
 export default router;

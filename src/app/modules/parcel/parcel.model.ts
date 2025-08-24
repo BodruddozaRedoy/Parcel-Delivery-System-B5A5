@@ -31,7 +31,7 @@ export interface IParcel {
   createdAt?: Date;
   updatedAt?: Date;
   isDeleted?: boolean;
-  isBlocked?: boolean
+  isBlocked?: boolean;
 }
 
 const StatusLogSchema = new Schema<IStatusLog>({
@@ -50,15 +50,19 @@ const ParcelSchema = new Schema<IParcel>(
     fee: { type: Number, default: 0 },
     sender: { type: Schema.Types.ObjectId, ref: "User", required: true },
     receiver: {
-      name:String,
-      phone:String,
+      name: String,
+      phone: String,
     },
     fromAddress: { type: String, required: true },
     toAddress: { type: String, required: true },
-    currentStatus: { type: String, enum: Object.values(ParcelStatus), default: ParcelStatus.REQUESTED },
+    currentStatus: {
+      type: String,
+      enum: Object.values(ParcelStatus),
+      default: ParcelStatus.REQUESTED,
+    },
     statusLogs: { type: [StatusLogSchema], default: [] },
-    isDeleted: { type: Boolean, default: false },
-    isBlocked: {type: Boolean, default: false}
+    isDeleted: { type: Boolean, default: false, required: true },
+    isBlocked: { type: Boolean, default: false, required: true },
   },
   { timestamps: true }
 );

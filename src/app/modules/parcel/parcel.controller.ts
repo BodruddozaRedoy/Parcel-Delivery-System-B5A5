@@ -381,13 +381,23 @@ export const getDeliveryStats = async (req: Request, res: Response) => {
 export const toggleParcelBlock = async (req: Request, res: Response) => {
   const { parcelId } = req.params;
   try {
-    const updateBlock = await Parcel.findByIdAndUpdate(parcelId);
-    if (!updateBlock) {
+    // Find parcel first
+    const parcel = await Parcel.findById(parcelId);
+    if (!parcel) {
       return res
         .status(404)
         .json({ success: false, message: "Parcel not found" });
     }
-    res.status(200).json({success: true, message:"Parcel updated"})
+
+    // Toggle the value
+    parcel.isBlocked = !parcel.isBlocked;
+    await parcel.save();
+
+    res.status(200).json({
+      success: true,
+      message: `Parcel ${parcel.isBlocked ? "blocked" : "unblocked"}`,
+      data: parcel,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
