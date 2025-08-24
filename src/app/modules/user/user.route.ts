@@ -29,6 +29,6 @@ router.get("/", authenticate, authorize("admin"), searchUsers);
 router.get("/stats", authenticate, authorize("admin"), getUserStats);
 router.patch("/:id", authenticate, authorize("admin"), updateUser);
 router.patch("/:id/status", authenticate, authorize("admin"), toggleUserStatus);
-router.patch("/toggle/block/userId", authenticate, authorize("admin"), toggleUserBlock)
+router.patch("/toggle/block/:userId", authenticate, authorize("admin"), toggleUserBlock)
 
 export default router;
