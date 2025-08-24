@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Parcel, ParcelStatus } from "./parcel.model";
 import { generateTrackingId } from "../../utils/generateTrackingId";
 import { User } from "../user/user.model"; // Added import for User
+import { success } from "zod";
 
 // Helper: generate tracking ID
 
@@ -372,6 +373,21 @@ export const getDeliveryStats = async (req: Request, res: Response) => {
             : 0,
       },
     });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+export const toggleParcelBlock = async (req: Request, res: Response) => {
+  const { parcelId } = req.params;
+  try {
+    const updateBlock = await Parcel.findByIdAndUpdate(parcelId);
+    if (!updateBlock) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Parcel not found" });
+    }
+    res.status(200).json({success: true, message:"Parcel updated"})
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
