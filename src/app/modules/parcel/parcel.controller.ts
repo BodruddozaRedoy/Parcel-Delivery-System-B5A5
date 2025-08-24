@@ -152,7 +152,11 @@ export const updateParcelStatus = async (req: Request, res: Response) => {
       return res
         .status(404)
         .json({ success: false, message: "Parcel not found" });
-
+    if (parcel.currentStatus === "canceled") {
+      return res
+        .status(404)
+        .json({ success: false, message: "Parcel is already canceled" });
+    }
     parcel.currentStatus = status;
     parcel.statusLogs.push({
       status,
