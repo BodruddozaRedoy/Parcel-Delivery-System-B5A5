@@ -31,6 +31,7 @@ export interface IUser extends Document {
   passwordChangedAt?: Date;
   resetPasswordToken?: string;
   resetPasswordExpire?: Date;
+  isBlocked: boolean;
   createdAt: Date;
   updatedAt: Date;
 }

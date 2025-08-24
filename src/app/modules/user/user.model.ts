@@ -1,7 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import { IUser, Role, Status } from "../../interfaces/user.interface";
-
-
+import { boolean } from "zod";
 
 const UserSchema: Schema = new Schema(
   {
@@ -10,7 +9,11 @@ const UserSchema: Schema = new Schema(
     phone: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     role: { type: String, enum: Object.values(Role), default: Role.SENDER },
-    status: { type: String, enum: Object.values(Status), default: Status.ACTIVE },
+    status: {
+      type: String,
+      enum: Object.values(Status),
+      default: Status.ACTIVE,
+    },
     address: {
       street: String,
       city: String,
@@ -23,6 +26,7 @@ const UserSchema: Schema = new Schema(
     passwordChangedAt: Date,
     resetPasswordToken: String,
     resetPasswordExpire: Date,
+    isBlocked: { type: boolean, required: true, default: false },
   },
   { timestamps: true }
 );
