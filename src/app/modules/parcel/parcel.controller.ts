@@ -219,8 +219,9 @@ export const getMyParcels = async (req: Request, res: Response) => {
 
 // Receiver: get all incoming parcels
 export const getIncomingParcels = async (req: Request, res: Response) => {
+  // console.log(req.user)
   try {
-    const parcels = await Parcel.find({ receiver: req.user!._id });
+    const parcels = await Parcel.find({ "receiver._id": req.user!._id });
     res.status(200).json({
       success: true,
       message: "All incoming parcels fetched",
@@ -410,5 +411,54 @@ export const toggleParcelBlock = async (req: Request, res: Response) => {
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
+  }
+};
+
+// Utility: list all users with receiver role (for sender/admin)
+export const getReceiverUsers = async (req: Request, res: Response) => {
+  try {
+    const { search, page = 1, limit = 10 } = req.query as {
+      search?: string;
+      page?: any;
+      limit?: any;
+    };
+
+    const filter: any = { role: "receiver", status: "active", isBlocked: false };
+
+    if (search) {
+      filter.$or = [
+        { fullName: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+        { phone: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const skip = (Number(page) - 1) * Number(limit);
+
+    const receivers = await User.find(filter)
+      .select("fullName email phone role status isBlocked createdAt")
+      .skip(skip)
+      .limit(Number(limit))
+      .sort({ createdAt: -1 });
+
+    const total = await User.countDocuments(filter);
+
+    return res.status(200).json({
+      success: true,
+      message: "Receiver users fetched successfully",
+      data: receivers,
+      pagination: {
+        page: Number(page),
+        limit: Number(limit),
+        total,
+        pages: Math.ceil(total / Number(limit)),
+      },
+    });
+  } catch (error) {
+    console.error("Get receiver users error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while fetching receiver users",
+    });
   }
 };

@@ -23,7 +23,7 @@ export interface IParcel {
   weight: number;
   fee?: number;
   sender: Types.ObjectId;
-  receiver: Types.ObjectId;
+  receiver: Object;
   fromAddress: string;
   toAddress: string;
   currentStatus: ParcelStatus;
@@ -49,10 +49,14 @@ const ParcelSchema = new Schema<IParcel>(
     weight: { type: Number, required: true },
     fee: { type: Number, default: 0 },
     sender: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    receiver: {
-      name: String,
-      phone: String,
-    },
+    receiver: new Schema(
+      {
+        _id: { type: Schema.Types.ObjectId, required: true, index: true },
+        name: String,
+        phone: String,
+      },
+      { _id: false }
+    ),
     fromAddress: { type: String, required: true },
     toAddress: { type: String, required: true },
     currentStatus: {

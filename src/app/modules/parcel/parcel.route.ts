@@ -13,6 +13,7 @@ import {
   toggleParcelStatus,
   getDeliveryStats,
   toggleParcelBlock,
+  getReceiverUsers,
 } from "./parcel.controller";
 import { authenticate, authorize } from "../../middlewares/auth";
 
@@ -25,6 +26,12 @@ router.get("/track/:trackingId", getParcelByTrackingId); // public tracking
 router.post("/", authenticate, authorize("sender"), createParcel);
 router.patch("/cancel/:id", authenticate, authorize("sender"), cancelParcel);
 router.get("/my-parcels", authenticate, authorize("sender"), getMyParcels);
+router.get(
+  "/receivers",
+  authenticate,
+  authorize("sender", "admin"),
+  getReceiverUsers
+);
 
 // Receiver routes
 router.get(
@@ -56,7 +63,12 @@ router.patch(
   authorize("admin"),
   toggleParcelStatus
 );
-router.patch("/toggle/block/:parcelId", authenticate, authorize("admin"), toggleParcelBlock)
+router.patch(
+  "/toggle/block/:parcelId",
+  authenticate,
+  authorize("admin"),
+  toggleParcelBlock
+);
 router.delete("/:id", authenticate, authorize("admin"), deleteParcel);
 
 export default router;
