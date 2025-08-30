@@ -11,7 +11,7 @@ const app: Application = express();
 // Middlewares
 app.use(
   cors({
-    origin: ["http://localhost:6565"],
+    origin: ["http://localhost:6565", "https://parcel-delivery-system-frontend-b5a.vercel.app"],
     credentials: true,
   })
 );
