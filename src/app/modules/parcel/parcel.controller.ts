@@ -235,22 +235,33 @@ export const getIncomingParcels = async (req: Request, res: Response) => {
 // Admin: Get all parcels with filters
 export const getAllParcels = async (req: Request, res: Response) => {
   try {
-    const { status, sender, receiver, page = 1, limit = 10 } = req.query;
+    const { status, sender, receiver } = req.query as any;
+    const pageRaw = (req.query.page as string) ?? "1";
+    const limitRaw = (req.query.limit as string) ?? "10";
+
+    const pageNum = Number(pageRaw) || 1;
+    const unlimited =
+      typeof limitRaw === "string" &&
+      (limitRaw.toLowerCase?.() === "all" || Number(limitRaw) === 0);
+    const limitNum = unlimited ? 0 : Number(limitRaw) || 10;
 
     const filter: any = {};
     if (status) filter.currentStatus = status;
     if (sender) filter.sender = sender;
     if (receiver) filter.receiver = receiver;
 
-    const skip = (Number(page) - 1) * Number(limit);
+    const skip = limitNum > 0 ? (pageNum - 1) * limitNum : 0;
 
-    const parcels = await Parcel.find(filter)
+    let query = Parcel.find(filter)
       .populate("sender", "fullName email phone")
       .populate("receiver", "fullName email phone")
-      .skip(skip)
-      .limit(Number(limit))
       .sort({ createdAt: -1 });
 
+    if (limitNum > 0) {
+      query = query.skip(skip).limit(limitNum);
+    }
+
+    const parcels = await query;
     const total = await Parcel.countDocuments(filter);
 
     res.status(200).json({
@@ -258,10 +269,10 @@ export const getAllParcels = async (req: Request, res: Response) => {
       message: "All parcels fetched",
       data: parcels,
       pagination: {
-        page: Number(page),
-        limit: Number(limit),
+        page: pageNum,
+        limit: limitNum,
         total,
-        pages: Math.ceil(total / Number(limit)),
+        pages: limitNum > 0 ? Math.ceil(total / limitNum) : 1,
       },
     });
   } catch (error) {
