@@ -233,52 +233,80 @@ export const getIncomingParcels = async (req: Request, res: Response) => {
 };
 
 // Admin: Get all parcels with filters
-export const getAllParcels = async (req: Request, res: Response) => {
+// export const getAllParcels = async (req: Request, res: Response) => {
+//   try {
+//     const { status, sender, receiver } = req.query as any;
+//     const pageRaw = (req.query.page as string) ?? "1";
+//     const limitRaw = (req.query.limit as string) ?? "10";
+
+//     const pageNum = Number(pageRaw) || 1;
+//     const unlimited =
+//       typeof limitRaw === "string" &&
+//       (limitRaw.toLowerCase?.() === "all" || Number(limitRaw) === 0);
+//     const limitNum = unlimited ? 0 : Number(limitRaw) || 10;
+
+//     // Build filter dynamically
+//     const filter: any = {};
+//     if (status) filter.currentStatus = status;
+//     if (sender) {
+//       // sender is stored as ObjectId
+//       filter.sender = new mongoose.Types.ObjectId(sender);
+//     }
+//     if (receiver) {
+//       // receiver._id is nested in your schema
+//       filter["receiver._id"] = new mongoose.Types.ObjectId(receiver);
+//     }
+
+//     const skip = limitNum > 0 ? (pageNum - 1) * limitNum : 0;
+
+//     let query = Parcel.find(filter)
+//       .populate("sender", "fullName email phone")
+//       // don’t try to populate receiver since it's embedded, not a ref
+//       .sort({ createdAt: -1 });
+
+//     if (limitNum > 0) {
+//       query = query.skip(skip).limit(limitNum);
+//     }
+
+//     const parcels = await query.exec();
+//     const total = await Parcel.countDocuments(filter);
+
+//     res.status(200).json({
+//       success: true,
+//       message: "All parcels fetched",
+//       data: parcels,
+//       pagination: {
+//         page: pageNum,
+//         limit: limitNum,
+//         total,
+//         pages: limitNum > 0 ? Math.ceil(total / limitNum) : 1,
+//       },
+//     });
+//   } catch (error) {
+//     res.status(500).json({ message: "Server error", error });
+//   }
+// };
+
+export const getAllParcels = async (req: Request, res:Response) => {
   try {
-    const { status, sender, receiver } = req.query as any;
-    const pageRaw = (req.query.page as string) ?? "1";
-    const limitRaw = (req.query.limit as string) ?? "10";
-
-    const pageNum = Number(pageRaw) || 1;
-    const unlimited =
-      typeof limitRaw === "string" &&
-      (limitRaw.toLowerCase?.() === "all" || Number(limitRaw) === 0);
-    const limitNum = unlimited ? 0 : Number(limitRaw) || 10;
-
-    const filter: any = {};
-    if (status) filter.currentStatus = status;
-    if (sender) filter.sender = sender;
-    if (receiver) filter.receiver = receiver;
-
-    const skip = limitNum > 0 ? (pageNum - 1) * limitNum : 0;
-
-    let query = Parcel.find(filter)
-      .populate("sender", "fullName email phone")
-      .populate("receiver", "fullName email phone")
-      .sort({ createdAt: -1 });
-
-    if (limitNum > 0) {
-      query = query.skip(skip).limit(limitNum);
-    }
-
-    const parcels = await query;
-    const total = await Parcel.countDocuments(filter);
+    const parcels = await Parcel.find({})
 
     res.status(200).json({
       success: true,
       message: "All parcels fetched",
       data: parcels,
-      pagination: {
-        page: pageNum,
-        limit: limitNum,
-        total,
-        pages: limitNum > 0 ? Math.ceil(total / limitNum) : 1,
-      },
+      // pagination: {
+      //   page: pageNum,
+      //   limit: limitNum,
+      //   total,
+      //   pages: limitNum > 0 ? Math.ceil(total / limitNum) : 1,
+      // },
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
-};
+}
+
 
 // Admin: Get parcel by ID
 export const getParcelById = async (req: Request, res: Response) => {
